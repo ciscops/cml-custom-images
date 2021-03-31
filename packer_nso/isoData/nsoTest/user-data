@@ -1,0 +1,30 @@
+#cloud-config
+chpasswd:
+  expire: False
+  list:
+    - ubuntu:cisco
+    - cisco:cisco
+ssh_pwauth: True
+users:
+  - default
+  - name: cisco
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBCy7wDaMYB5IZ7Gj5J7creqIYkzXHsckztp/SfwzYWt tithomas@ubuntubuild
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+apt:
+  preserve_sources_list: false
+  primary:
+    - arches:
+        - default
+      uri: 'http://us.archive.ubuntu.com/ubuntu'
+      search_dns: true
+  security:
+    - arches:
+        - default
+      uri: 'http://us.archive.ubuntu.com/ubuntu'
+      search_dns: true
+runcmd:
+  - echo "AllowUsers cisco" >> /etc/ssh/sshd_config
+  - service ssh restart
