@@ -12,36 +12,11 @@ This repo contains HashiCorp Packer image definitions for custom qcow2 image cre
    ```
     - copy the 'x.installer.bin' file to ./packer_nso/installResources
 4. Download IOS, XR, NXOS, and ASA Network Element Drivers (NEDs) from: https://developer.cisco.com/docs/nso/#!getting-and-installing-nso
-    - extract tar.gz files from signed bin NED files
-    ```
-    e.g. sh ncs-5.3-cisco-nx-5.13.1.1.signed.bin
-    ```  
-    - copy extracted x.tar.gz files to ./packer_nso/installResources
-    - ./packer_nso/installResources should look something like this:
-    ```
-    (venv) (base) installResources % ls -1
-    ncs-5.5-cisco-asa-6.12.4.tar.gz
-    ncs-5.5-cisco-ios-6.69.1.tar.gz
-    ncs-5.5-cisco-iosxr-7.33.1.tar.gz
-    ncs-5.5-cisco-nx-5.21.4.tar.gz
-    nso-5.5.linux.x86_64.installer.bin
-    requirements.txt
-    ```
-4. Find NED IDs in tar.gz files. Note the ID of the NED is the directory created upon tar file extraction.
-    ```   
-    For Example
-    % tar -tvf ncs-5.5-cisco-asa-6.12.4.tar.gz
-    ...
-    -rw-r--r-- jenkins/users   1412 2021-01-20 11:28 cisco-asa-cli-6.12/package-meta-data.xml
-    ...
-   
-   cisco-asa-cli-6.12 is the NED ID
-    ```   
+    - copy the NED 'X.signed.bin' files to ./packer_nso/installResources
 
 5. Edit local-nso-5.5.pkrvars.hcl
     - Add SHA256 hash for your downloaded focal-server-cloudimg-amd64.img
-    - Add NED filenames without tar.gz file extension
-    - Add NED IDs
+    - Add NED filenames to nso_ned_list
 
 6. Validate Packer configuration
     ```
