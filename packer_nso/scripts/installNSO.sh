@@ -31,7 +31,7 @@ echo "export NCS_JAVA_VM_OPTIONS=\"${NSO_JAVA_OPTS}\"" >> /etc/skel/.bashrc
 echo "source $INSTALL_DIR/ncsrc" >> ~ubuntu/.bashrc
 echo "export NCS_JAVA_VM_OPTIONS=\"${NSO_JAVA_OPTS}\"" >> ~ubuntu/.bashrc
 
-# Install any NEDs that may have been uploaded to /tmp
+# Install any NEDs that may have been uploaded
 nedList=()
 shopt -s extglob nullglob
 for f in $UPLOAD_DIR/ncs-*@(.tar.gz|.signed.bin)
