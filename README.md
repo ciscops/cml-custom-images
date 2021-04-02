@@ -26,7 +26,10 @@ targeting use in Cisco's CML2 simulation environment.
     packer build -var-file=local-nso-5.5.pkrvars.hcl nso.pkr.hcl
     ```
 
-Now you can upload the NSO QCOW2 newly-built image from the output folder into CML.
+Once the build is finished, you can upload the NSO QCOW2 image from the output folder into CML and
+create a new image definition using 'Ubuntu' for the underlying node definition. We strongly recommend
+giving the new NSO image definition at least 8GB of memory and 4 vCPUs (a real operational deployment
+of NSO would typically require more).
 
 ## Netbox
 Note the script in [./packer_netbox/scripts/installNetbox.sh](./packer_netbox/scripts/installNetbox.sh) follows instructions
@@ -46,4 +49,6 @@ from [https://netbox.readthedocs.io/en/stable/installation/](https://netbox.read
     packer build -var-file=local-netbox.pkrvars.hcl netbox.pkr.hcl
     ```
 
-Now you can upload the Netbox QCOW2 newly-built image from the output folder into CML.
+Once the build is finished, you can upload the Netbox QCOW2 image from the output folder into CML and
+create a new image definition using 'Ubuntu' for the underlying node definition. We strongly recommend
+giving the new Netbox image definition at least 8GB of memory and 4 vCPUs.
