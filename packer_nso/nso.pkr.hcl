@@ -12,7 +12,7 @@ variable "disk_size" {
 
 variable "iso_checksum" {
   type    = string
-#  default = "sha256:db5969e16940d67184adb740db1b1f186b201714430737ea1c64a85e40d25f6b"
+#  default = "sha256:07afb75bc624983bc5b35556c56e65ecfcd47ad51260b1dee588b311b8257010"
 }
 
 variable "iso_url" {
@@ -76,8 +76,7 @@ variable "vm_name" {
 }
 
 source "qemu" "build_nso" {
-//  accelerator               = "kvm"
-  accelerator               = "hvf"
+  accelerator               = "kvm"
   cd_files                  = ["./isoData/build/*"]
   cd_label                  = "cidata"
   disk_compression          = true
@@ -112,7 +111,7 @@ build {
   }
   provisioner "file" {
     destination = "${var.upload_directory}/"
-    source      = "./installResources/nso-${var.nso_version}.linux.x86_64.installer.bin"
+    source      = fileexists("./installResources/nso-${var.nso_version}.linux.x86_64.signed.bin") ? "./installResources/nso-${var.nso_version}.linux.x86_64.signed.bin" : "./installResources/nso-${var.nso_version}.linux.x86_64.installer.bin"
   }
   provisioner "file" {
     destination = "${var.upload_directory}/"

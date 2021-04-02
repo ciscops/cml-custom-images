@@ -2,12 +2,21 @@
 
 echo "==> Installing NSO $NSO_VER to $INSTALL_DIR"
 
-#wget -q ${HTTP_URL}/nso-${NSO_VER}.linux.x86_64.installer.bin -O /tmp/nso-${NSO_VER}.linux.x86_64.installer.bin
-
 /bin/mkdir -p $INSTALL_DIR
-/bin/sh $UPLOAD_DIR/nso-${NSO_VER}.linux.x86_64.installer.bin $INSTALL_DIR --local-install
 
-# Normally these keys should be RW only for user, but may need R potentially random user
+nsoInstallerSigned=nso-${NSO_VER}.linux.x86_64.signed.bin
+nsoInstaller=nso-${NSO_VER}.linux.x86_64.installer.bin
+
+# If using the signed wrapper, unpack the inner installer first
+if [[ -f $UPLOAD_DIR/$nsoInstallerSigned ]]; then
+  tmpDir=`/usr/bin/mktemp -d $UPLOAD_DIR/nsoInstall.XXXX`
+  (cd $tmpDir; sh $UPLOAD_DIR/$nsoInstallerSigned --skip-verification >> /dev/null)
+  /bin/mv $tmpDir/$nsoInstaller $UPLOAD_DIR
+  /bin/rm -rf $tmpDir $UPLOAD_DIR/$nsoInstallerSigned
+fi
+/bin/sh $UPLOAD_DIR/$nsoInstaller $INSTALL_DIR --local-install
+
+# Normally these keys should be RW only for user, but may need R for potentially random user
 /bin/chmod 0644 $INSTALL_DIR/netsim/confd/etc/confd/ssh/ssh_host_rsa_key
 /bin/chmod 0644 $INSTALL_DIR/etc/ncs/ssh/ssh_host_ed25519_key
 
@@ -29,7 +38,7 @@ for f in $UPLOAD_DIR/ncs-*@(.tar.gz|.signed.bin)
 do
   nedFile=`basename $f`
   if [[ $nedFile == *.signed.bin ]]; then
-    tmpDir=`/usr/bin/mktemp -d $UPLOAD_DIR/temp.XXXX`
+    tmpDir=`/usr/bin/mktemp -d $UPLOAD_DIR/nsoNED.XXXX`
     (cd $tmpDir; sh $f --skip-verification >> /dev/null)
     nedFile=`/usr/bin/basename $tmpDir/ncs-*.tar.gz`
     /bin/mv $tmpDir/$nedFile $UPLOAD_DIR
