@@ -69,6 +69,42 @@ Once the build is finished, you can upload the Netbox QCOW2 image from the outpu
 create a new image definition using 'Ubuntu' for the underlying node definition. We strongly recommend
 giving the new Netbox image definition at least 2GB of memory and 1 vCPU.
 
+## Packer build for AWX
+This creates an image that hosts AWX on top of a single-node Kubernetes cluster. For the CRI, you can
+opt for either containerd or Docker through the ```k3s_use_docker``` variable. Choosing containerd
+(```k3s_use_docker=false```) will result in a much smaller image, but a longer initial startup time for
+AWX. Choosing Docker will result in a larger image as the install attempts to pre-populate the container
+cache to reduce the initial AWX startup time.
+
+1. [Download](http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img) the current Ubuntu 20.04
+   cloud image to [./packer_netbox](./packer_netbox) directory
+2. Get the current focal-server-cloudimg-amd64.img SHA256 [hash](http://cloud-images.ubuntu.com/focal/current/SHA256SUMS)
+3. Edit [./packer_awx/local-awx.pkrvars.hcl](./packer_awx/local-awx.pkrvars.hcl)
+   - Update the SHA256 hash for your downloaded focal-server-cloudimg-amd64.img
+4. Validate the Packer configuration
+    ```commandline
+    packer validate -var-file=local-awx.pkrvars.hcl awx.pkr.hcl
+    ```
+5. Build the image
+    ```commandline
+    packer build -var-file=local-awx.pkrvars.hcl awx.pkr.hcl
+    ```
+
+Once the build is finished, you can upload the AWX QCOW2 image from the output folder into CML and create a
+new image definition using 'Ubuntu' for the underlying node definition. We strongly recommend giving the new
+AWX image definition at least 8GB of memory and 4 vCPUs.
+
+Once an instance is created and booted from the AWX image, run the ```/etc/awx/startup.sh``` script to finish
+the setup. The script will output which port the AWX service is listening on and what password was generated for
+the AWX 'admin' user. Afterwards, if you need to see just the port:
+```commandline
+kubectl get services awx-service -o jsonpath='{.spec.ports[0].nodePort}'
+```
+To see the 'admin' password:
+```commandline
+kubectl get secret awx-admin-password -o jsonpath='{.data.password}' | base64 --decode
+```
+
 
 # Manually building images
 
