@@ -77,7 +77,7 @@ AWX. Choosing Docker will result in a larger image as the install attempts to pr
 cache to reduce the initial AWX startup time.
 
 1. [Download](http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img) the current Ubuntu 20.04
-   cloud image to [./packer_netbox](./packer_netbox) directory
+   cloud image to [./packer_awx](./packer_awx) directory
 2. Get the current focal-server-cloudimg-amd64.img SHA256 [hash](http://cloud-images.ubuntu.com/focal/current/SHA256SUMS)
 3. Edit [./packer_awx/local-awx.pkrvars.hcl](./packer_awx/local-awx.pkrvars.hcl)
    - Update the SHA256 hash for your downloaded focal-server-cloudimg-amd64.img
