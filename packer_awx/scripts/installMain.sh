@@ -52,7 +52,7 @@ AWX instructions
 ################
 
 Run the following script to finish the AWX install and launch:
-/etc/awx/startup.sh
+$AWX_RESOURCE_DIR/startup.sh
 
 EOF
 
