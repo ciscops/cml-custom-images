@@ -2,7 +2,7 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-echo "==> Cleanup"
+printf "==> Cleanup\n"
 
 # Various OS-related stuff
 /bin/apt-get -qq -y autoremove --purge
@@ -19,3 +19,4 @@ echo "==> Cleanup"
 
 # Make sure all filesystem changes are flushed
 /bin/sync
+exit 0

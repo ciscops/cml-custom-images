@@ -1,6 +1,12 @@
 #!/bin/bash
 
-echo "==> Installing Netbox"
+printf "==> Installing Netbox\n"
+
+#sudo -u postgres psql
+#CREATE DATABASE netbox;
+#CREATE USER netbox WITH PASSWORD ${NETBOX_DB_PASSWORD};
+#GRANT ALL PRIVILEGES ON DATABASE netbox TO netbox;
+#\q
 
 sudo -u postgres psql postgres -c "CREATE DATABASE netbox;"
 sudo -u postgres psql postgres -c "CREATE USER netbox WITH PASSWORD '${NETBOX_DB_PASSWORD}';"
@@ -39,12 +45,13 @@ ln -s /etc/nginx/sites-available/netbox /etc/nginx/sites-enabled/netbox
 systemctl restart nginx
 
 # An MOTD to hint at what to do once folks log in
-echo "==> Generating MOTD"
+printf "==> Generating MOTD\n"
 /bin/cat > /etc/motd <<EOF
 ###################
 Netbox is installed
 ###################
 
-The Netbox credentials are admin/admin.
+Netbox credentials are admin/admin.
 
 EOF
+exit 0
