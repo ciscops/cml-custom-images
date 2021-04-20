@@ -109,7 +109,7 @@ build {
     scripts          = [
       "scripts/updateOS.sh",
       "scripts/packages.sh",
-      "scripts/installNetbox.sh",
+      "scripts/installMain.sh",
       "scripts/cleanup.sh"
     ]
   }
