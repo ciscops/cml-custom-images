@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "==> Installing NSO $NSO_VER to $INSTALL_DIR"
+printf "==> Installing NSO $NSO_VER to $INSTALL_DIR\n"
 
 /bin/mkdir -p $INSTALL_DIR
 
@@ -23,13 +23,13 @@ fi
 # Save some space
 /bin/rm -rf $INSTALL_DIR/{doc,man}
 
-echo "==> Updating default shell skeletons"
+printf "==> Updating default shell skeletons\n"
 echo "source $INSTALL_DIR/ncsrc" >> /etc/skel/.bashrc
 echo "export NCS_JAVA_VM_OPTIONS=\"${NSO_JAVA_OPTS}\"" >> /etc/skel/.bashrc
 
 # Catch the default user too (it's hard to get rid of that user as it's created already)
-echo "source $INSTALL_DIR/ncsrc" >> ~ubuntu/.bashrc
-echo "export NCS_JAVA_VM_OPTIONS=\"${NSO_JAVA_OPTS}\"" >> ~ubuntu/.bashrc
+echo "source $INSTALL_DIR/ncsrc" >> /home/${SSH_USERNAME}/.bashrc
+echo "export NCS_JAVA_VM_OPTIONS=\"${NSO_JAVA_OPTS}\"" >> /home/${SSH_USERNAME}/.bashrc
 
 # Install any NEDs that may have been uploaded
 nedList=()
@@ -47,12 +47,12 @@ do
   topLevelDir=`/usr/bin/tar -tzf $UPLOAD_DIR/$nedFile | /usr/bin/head -1`
   nedName=${topLevelDir%/}
   nedList+=($nedName)
-  echo "==> Installing NED $nedName [$nedFile] to $INSTALL_DIR/packages/neds"
+  printf "==> Installing NED $nedName [$nedFile] to $INSTALL_DIR/packages/neds\n"
   /usr/bin/tar -xzf $UPLOAD_DIR/$nedFile --directory $INSTALL_DIR/packages/neds
 done
 
 # An MOTD to hint at what to do once folks log in
-echo "==> Generating MOTD"
+printf "==> Generating MOTD\n"
 /bin/cat > /etc/motd <<EOF
 #########
 Cisco NSO $NSO_VER is installed in $INSTALL_DIR
@@ -70,9 +70,11 @@ if [[ ${#nedList[@]} -gt 0 ]]; then
   do
     packageList="$packageList --package $INSTALL_DIR/packages/neds/$ned"
   done
-  echo "==> Running initial ncs_setup to $RUN_DIR with ${#nedList[@]} package(s)"
+  printf "==> Running initial ncs_setup to $RUN_DIR with ${#nedList[@]} package(s)\n"
   source $INSTALL_DIR/ncsrc
   $INSTALL_DIR/bin/ncs-setup --dest $RUN_DIR $packageList
-  /bin/chown -R ubuntu:ubuntu $RUN_DIR
+  /bin/chown -R ${SSH_USERNAME}:${SSH_USERNAME} $RUN_DIR
   /bin/cat $RUN_DIR/README.ncs | /usr/bin/sed 1d >> /etc/motd
 fi
+
+exit 0

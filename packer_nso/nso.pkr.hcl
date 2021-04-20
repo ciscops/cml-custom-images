@@ -12,7 +12,7 @@ variable "disk_size" {
 
 variable "iso_checksum" {
   type    = string
-#  default = "sha256:07afb75bc624983bc5b35556c56e65ecfcd47ad51260b1dee588b311b8257010"
+#  default = "sha256:38b82727bfc1b36d9784bf07b8368c1d777450e978837e1cd7fa32b31837e77c"
 }
 
 variable "iso_url" {
@@ -33,6 +33,16 @@ variable "nso_install_directory" {
 variable "nso_java_opts" {
   type    = string
   default = "-Xmx2G -Xms1G"
+}
+
+# Some NSO packages still require Java 8 (previous LTS release)
+variable "nso_java_version" {
+  type    = string
+  default = "11"
+  validation {
+    condition     = contains(["8", "11"], var.nso_java_version)
+    error_message = "Java version for NSO must be \"8\" or \"11\"."
+  }
 }
 
 variable "nso_ned_list" {
@@ -120,21 +130,22 @@ build {
 
   provisioner "shell" {
     environment_vars = [
-      "UPDATE_OS=${var.update_os}",
-      "SSH_USERNAME=${var.ssh_username}",
-      "SSH_PASSWORD=${var.ssh_password}",
-#      "HTTP_URL=http://${build.PackerHTTPAddr}",
-      "UPLOAD_DIR=${var.upload_directory}",
       "INSTALL_DIR=${var.nso_install_directory}",
-      "RUN_DIR=${var.nso_run_directory}",
+      #"HTTP_URL=http://${build.PackerHTTPAddr}",
+      "NSO_JAVA_OPTS=${var.nso_java_opts}",
+      "NSO_JAVA_VERSION=${var.nso_java_version}",
       "NSO_VER=${var.nso_version}",
-      "NSO_JAVA_OPTS=${var.nso_java_opts}"
+      "RUN_DIR=${var.nso_run_directory}",
+      "SSH_PASSWORD=${var.ssh_password}",
+      "SSH_USERNAME=${var.ssh_username}",
+      "UPDATE_OS=${var.update_os}",
+      "UPLOAD_DIR=${var.upload_directory}",
     ]
     execute_command  = "echo '${var.ssh_password}' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
     scripts          = [
       "scripts/updateOS.sh",
       "scripts/packages.sh",
-      "scripts/installNSO.sh",
+      "scripts/installMain.sh",
       "scripts/cleanup.sh"
     ]
   }
