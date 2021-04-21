@@ -72,7 +72,7 @@ if [[ ${#nedList[@]} -gt 0 ]]; then
   done
   printf "==> Running initial ncs_setup to $RUN_DIR with ${#nedList[@]} package(s)\n"
   source $INSTALL_DIR/ncsrc
-  $INSTALL_DIR/bin/ncs-setup --dest $RUN_DIR $packageList
+  $INSTALL_DIR/bin/ncs-setup --dest $RUN_DIR --use-copy $packageList
   /bin/chown -R ${SSH_USERNAME}:${SSH_USERNAME} $RUN_DIR
   /bin/cat $RUN_DIR/README.ncs | /usr/bin/sed 1d >> /etc/motd
 fi
