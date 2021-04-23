@@ -25,9 +25,19 @@ variable "memory" {
   default = "2048M"
 }
 
+# Currently only used for local installs
 variable "nso_install_directory" {
   type    = string
   default = "/pkgs/nso-install"
+}
+
+variable "nso_install_type" {
+  type    = string
+  default = "local"
+  validation {
+    condition     = contains(["local", "system"], var.nso_install_type)
+    error_message = "NSO install type must be \"local\" or \"system\"."
+  }
 }
 
 variable "nso_java_opts" {
@@ -132,6 +142,7 @@ build {
     environment_vars = [
       "INSTALL_DIR=${var.nso_install_directory}",
       #"HTTP_URL=http://${build.PackerHTTPAddr}",
+      "NSO_INSTALL_TYPE=${var.nso_install_type}",
       "NSO_JAVA_OPTS=${var.nso_java_opts}",
       "NSO_JAVA_VERSION=${var.nso_java_version}",
       "NSO_VER=${var.nso_version}",
@@ -150,3 +161,4 @@ build {
     ]
   }
 }
+
