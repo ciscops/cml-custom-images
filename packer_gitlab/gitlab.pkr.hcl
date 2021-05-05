@@ -35,25 +35,15 @@ variable "ssh_username" {
   default = "ubuntu"
 }
 
-# variable "netbox_db_password" {
-#   type    = string
-#   default = "somehardtoguesspassword"
-# }
+variable "gitlab_root_password" {
+  type    = string
+  default = "root"
+}
 
-# variable "netbox_password" {
-#   type    = string
-#   default = "admin"
-# }
-
-# variable "netbox_username" {
-#   type    = string
-#   default = "admin"
-# }
-
-# variable "netbox_email" {
-#   type    = string
-#   default = "admin@example.net"
-# }
+variable "gitlab_runner_token" {
+  type    = string
+  default = "zkguBxeyBzsEioz-KzKb"
+}
 
 variable "update_os" {
   type    = string
@@ -74,7 +64,6 @@ source "qemu" "build_gitlab" {
   disk_size                 = var.disk_size
   format                    = "qcow2"
   headless                  = true
-#  http_directory            = "installResources"
   iso_checksum              = var.iso_checksum
   iso_url                   = var.iso_url
   output_directory          = "output-gitlab"
@@ -112,6 +101,8 @@ build {
       "UPDATE_OS=${var.update_os}",
       "SSH_USERNAME=${var.ssh_username}",
       "SSH_PASSWORD=${var.ssh_password}",
+      "GITLAB_ROOT_PASSWORD=${var.gitlab_root_password}",
+      "GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN=${var.gitlab_runner_token}"
     ]
     execute_command  = "echo '${var.ssh_password}' | {{ .Vars }} sudo -S -E bash -x '{{ .Path }}'"
     scripts          = [
