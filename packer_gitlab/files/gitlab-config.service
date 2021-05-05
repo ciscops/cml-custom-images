@@ -1,0 +1,10 @@
+[Unit]
+Description=GitLab Config service
+After=network.target
+Before=gitlab-runsvdir.service
+
+[Service]
+ExecStart=/usr/local/sbin/gitlab-config.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -7,7 +7,7 @@ variable "cpus" {
 
 variable "disk_size" {
   type    = string
-  default = "4G"
+  default = "8G"
 }
 
 variable "iso_checksum" {
@@ -98,15 +98,20 @@ source "qemu" "build_gitlab" {
 build {
   sources = ["source.qemu.build_gitlab"]
 
+  provisioner "file" {
+    source = "files/gitlab-config.sh"
+    destination = "/tmp/gitlab-config.sh"
+  }
+  provisioner "file" {
+    source = "files/gitlab-config.service"
+    destination = "/tmp/gitlab-config.service"
+  }
+  
   provisioner "shell" {
     environment_vars = [
       "UPDATE_OS=${var.update_os}",
       "SSH_USERNAME=${var.ssh_username}",
       "SSH_PASSWORD=${var.ssh_password}",
-#       "NETBOX_DB_PASSWORD=${var.netbox_db_password}",
-#       "DJANGO_SUPERUSER_USERNAME=${var.netbox_username}",
-#       "DJANGO_SUPERUSER_PASSWORD=${var.netbox_password}",
-#       "DJANGO_SUPERUSER_EMAIL=${var.netbox_email}"
     ]
     execute_command  = "echo '${var.ssh_password}' | {{ .Vars }} sudo -S -E bash -x '{{ .Path }}'"
     scripts          = [

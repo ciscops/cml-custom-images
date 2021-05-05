@@ -4,7 +4,13 @@ printf "==> Installing GitLab\n"
 
 curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash   
 
-sudo EXTERNAL_URL="http://gitlab.example.com" apt-get install gitlab-ce   
+sudo EXTERNAL_URL="http://gitlab.example.com" apt-get install gitlab-ce
+
+sudo mv /tmp/gitlab-config.sh /usr/local/sbin/gitlab-config.sh
+sudo mv /tmp/gitlab-config.service /etc/systemd/system/gitlab-config.service
+
+# systemctl start gitlab-config
+systemctl enable gitlab-config
 
 #sudo -u postgres psql
 #CREATE DATABASE netbox;
@@ -54,8 +60,6 @@ printf "==> Generating MOTD\n"
 ###################
 GitLab is installed
 ###################
-
-Netbox credentials are admin/admin.
 
 EOF
 exit 0
