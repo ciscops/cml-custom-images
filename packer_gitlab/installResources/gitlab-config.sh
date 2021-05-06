@@ -9,6 +9,7 @@ if [[ ! -z $PASSWORD && ! -z $IPADDR ]]; then
 /bin/cat > /etc/motd <<EOF
 ###################
 GitLab is accessible at http://$IPADDR:8081 with credentials root/$PASSWORD
+It can take up to five minutes for the GitLab UI to be available.
 ###################
 
 EOF
