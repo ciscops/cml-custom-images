@@ -88,11 +88,11 @@ build {
   sources = ["source.qemu.build_gitlab"]
 
   provisioner "file" {
-    source = "files/gitlab-config.sh"
+    source = "installResources/gitlab-config.sh"
     destination = "/tmp/gitlab-config.sh"
   }
   provisioner "file" {
-    source = "files/gitlab-config.service"
+    source = "installResources/gitlab-config.service"
     destination = "/tmp/gitlab-config.service"
   }
   
