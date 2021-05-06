@@ -1,0 +1,75 @@
+id: gitlab
+general:
+  description: GitLab on Ubuntu 20.04 Cloud Init Platform
+  nature: server
+  read_only: false
+device:
+  interfaces:
+    has_loopback_zero: false
+    physical:
+      - ens3
+      - ens4
+    serial_ports: 1
+    default_count: 2
+ui:
+  visible: true
+  description: |
+    GitLab on Ubuntu 20.04 Cloud Init Platform
+    4 GB DRAM, 2 vCPU (can be adjusted)
+    ##### Configuration
+        This Ubuntu image uses cloud-init YAML for configuration. Please
+        ensure to have a valid cloud-init. The pre-configured username
+        is 'ubuntu'. Use either the provided password or provide an
+        SSH key. The node comes with a very brief (but complete)
+        cloud-init example when you drop one onto the canvas.
+  label_prefix: gitlab-
+  icon: server
+  label: GitLab
+sim:
+  linux_native:
+    libvirt_domain_driver: kvm
+    driver: server
+    disk_driver: virtio
+    ram: 4096
+    cpus: 2
+    cpu_limit: 100
+    nic_driver: virtio
+    boot_disk_size: 20
+boot:
+  timeout: 180
+inherited:
+  image:
+    ram: true
+    cpus: true
+    cpu_limit: true
+    data_volume: true
+    boot_disk_size: true
+  node:
+    ram: true
+    cpus: true
+    cpu_limit: true
+    data_volume: true
+    boot_disk_size: true
+configuration:
+  generator:
+    driver: server
+  provisioning:
+    volume_name: cidata
+    media_type: iso
+    files:
+      - name: meta-data
+        editable: false
+        content: |-
+          instance-id: gitlab
+          local-hostname: gitlab
+      - name: user-data
+        editable: true
+        content: |-
+          #cloud-config
+          password: admin
+          chpasswd: { expire: False }
+          hostname: gitlab
+          ssh_pwauth: True
+          ssh_authorized_keys:
+             - your-ssh-pubkey-line-goes-here
+schema_version: 0.0.1
