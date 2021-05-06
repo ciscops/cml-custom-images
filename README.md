@@ -105,6 +105,24 @@ To see the 'admin' password:
 kubectl get secret awx-admin-password -o jsonpath='{.data.password}' | base64 --decode
 ```
 
+## Packer build for GitLab
+1. [Download](http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img) the current Ubuntu 20.04
+   cloud image to [./packer_gitlab](./packer_gitlab) directory
+2. Get the current focal-server-cloudimg-amd64.img SHA256 [hash](http://cloud-images.ubuntu.com/focal/current/SHA256SUMS)
+3. Edit [./packer_gitlab/local-gitlab.pkrvars.hcl](./packer_gitlab/local-gitlab.pkrvars.hcl)
+    - Update the SHA256 hash for your downloaded focal-server-cloudimg-amd64.img
+4. Validate the Packer configuration
+    ```commandline
+    packer validate -var-file=local-gitlab.pkrvars.hcl gitlab.pkr.hcl
+    ```
+5. Build the image
+    ```commandline
+    packer build -var-file=local-gitlab.pkrvars.hcl gitlab.pkr.hcl
+    ```
+
+Once the build is finished, you can upload the GitLab QCOW2 image from the output folder into CML and
+import the GitLab image definition from [./node_definitions](./node_definitions). The defaults for the GitLab node 
+definition are 4GB of memory and 2 vCPU.
 
 # Manually building images
 
@@ -125,9 +143,10 @@ installed with all of its software dependencies.
 ## Build system
 
 To start, you need an image "builder" system. I used an Ubuntu 20.04 VM, although the same basic steps should work
-with any Linux system. You could conceivably use the CML2 system itself (which is currently based on CentOS 8), but I
-would NOT recommend it. CML2 uses KVM for virtualization under the covers, but you would need to install some additional
-software packages from an admin shell.
+with any Linux system. A Vagrantfile is included that will bring up an Ubuntu 20.04 VM with the required packages.
+You could conceivably use the CML2 system itself (which is currently based on CentOS 8), but I would NOT recommend it. 
+CML2 uses KVM for virtualization under the covers, but you would need to install some additional software packages from 
+an admin shell.
 
 The rest of this document assumes an Ubuntu 20.04 build system. The system should have a reasonable amount of free disk
 space, say at least 20GB+, depending on how big your custom images might get. I would also recommend at least 4-8GB
