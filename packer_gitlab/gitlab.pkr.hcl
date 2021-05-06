@@ -37,7 +37,7 @@ variable "ssh_username" {
 
 variable "gitlab_root_password" {
   type    = string
-  default = "root"
+  default = "password"
 }
 
 variable "gitlab_runner_token" {
